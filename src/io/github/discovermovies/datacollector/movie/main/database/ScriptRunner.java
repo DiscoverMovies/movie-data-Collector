@@ -1,11 +1,17 @@
-package collector.main.database;
+package io.github.discovermovies.datacollector.movie.main.database;
 
 /*
- * Slightly modified version of the com.ibatis.common.jdbc.collector.main.database.ScriptRunner class
+*   This File has been slightly modified by SIDHIN S THOMAS
+*   from the version found at https://github.com/BenoitDuffez/ScriptRunner
+*/
+
+/*
+ * Slightly modified version of the com.ibatis.common.jdbc.ScriptRunner class
  * from the iBATIS Apache project. Only removed dependency on Resource class
  * and a constructor 
  * GPSHansl, 06.08.2015: regex for delimiter, rearrange comment/delimiter detection, remove some ide warnings.
  */
+
 /*
  *  Copyright 2004 Clinton Begin
  *
