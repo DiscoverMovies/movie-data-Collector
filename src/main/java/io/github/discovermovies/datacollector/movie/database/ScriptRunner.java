@@ -30,6 +30,7 @@ package io.github.discovermovies.datacollector.movie.database;
 
 import java.io.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -69,8 +70,6 @@ public class ScriptRunner {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.stopOnError = stopOnError;
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/mm/yy HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
         File logFile = new File("create_db.log");
         File errorLogFile = new File("create_db_error.log");
         try {
@@ -91,8 +90,9 @@ public class ScriptRunner {
         } catch(IOException e){
             System.err.println("Unable to access or create the  db_create error log");
         }
-        println("\n-------\n" + dtf.format(now) + "\n-------\n");
-        printlnError("\n-------\n" + dtf.format(now) + "\n-------\n");
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+        println("\n-------\n" + timeStamp + "\n-------\n");
+        printlnError("\n-------\n" + timeStamp + "\n-------\n");
     }
 
     public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
