@@ -1,4 +1,4 @@
-package io.github.discovermovies.datacollector.movie.main.database;
+package io.github.discovermovies.datacollector.movie.database;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -63,7 +63,7 @@ public class Database {
         System.out.println("Successfully connected to database.");
         System.out.println("Creating schema if doesn't exist...");
         ScriptRunner runner = new ScriptRunner(connection, false, false);
-        String file = "SQL\\CreateDatabase.sql";
+        String file = "resources\\SQL\\CreateDatabase.sql";
         try {
             runner.runScript(new BufferedReader(new FileReader(file)));
         } catch (IOException e) {

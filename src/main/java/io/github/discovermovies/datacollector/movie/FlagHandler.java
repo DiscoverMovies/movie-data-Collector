@@ -1,4 +1,4 @@
-package io.github.discovermovies.datacollector.movie.main;
+package io.github.discovermovies.datacollector.movie;
 
 /*
 *   Copyright (C) 2017 Sidhin S Thomas
