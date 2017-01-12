@@ -8,12 +8,12 @@ This will always create a schema by the name `**disovermovie**`
 ## Usage
 
 use the parameters:
-
-    ```
-        $ java -jar data-collector username password
-    ```
-
+    
+    
+    $ java -jar data-collector username password
+    
+    
 Flags :
 
-    * -h or --help to open help
-    * -R or --reset to reset the database and fill again
+   * `-h` or `--help` to open help
+   * `-R` or `--reset` to reset the database and fill again
