@@ -29,7 +29,7 @@ import java.sql.SQLException;
 public class Database {
     private  Connection connection;
 
-    private static final class SQL_STATEMENTS{
+    private final class SQL_STATEMENTS{
         private SQL_STATEMENTS(){};
 
         public static final String INSERT_STATEMENT_END = ")";
@@ -75,5 +75,6 @@ public class Database {
     }
 
     public void insertMovie(){
+
     }
 }

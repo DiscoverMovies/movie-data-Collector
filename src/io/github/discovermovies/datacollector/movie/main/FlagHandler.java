@@ -19,4 +19,5 @@ package io.github.discovermovies.datacollector.movie.main;
 *   along with data-collector.  If not, see <http://www.gnu.org/licenses/>.
 */
 public class FlagHandler {
+
 }

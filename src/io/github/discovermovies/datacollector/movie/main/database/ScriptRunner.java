@@ -29,20 +29,16 @@ package io.github.discovermovies.datacollector.movie.main.database;
  */
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.FileHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Tool to run database scripts
  */
+@SuppressWarnings("ALL")
 public class ScriptRunner {
 
     private static final String DEFAULT_DELIMITER = ";";
