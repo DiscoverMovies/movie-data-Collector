@@ -39,30 +39,32 @@ CREATE TABLE IF NOT EXISTS production_companies(
   name TEXT NOT NULL
 );
 
-#table 5: Crew
+#table 5: department
+CREATE TABLE IF NOT EXISTS department(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name TEXT NOT NULL
+);
+
+#table 6: Crew
 CREATE TABLE IF NOT EXISTS crew(
   id INT PRIMARY KEY AUTO_INCREMENT,
   name TEXT NOT NULL,
   deptid INT,
 
   FOREIGN KEY (deptid)
-    REFERENCES department(id)
+  REFERENCES department(id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-#table 6: Actors
+#table 7: Actors
 CREATE TABLE IF NOT EXISTS actors(
   id INT PRIMARY KEY AUTO_INCREMENT,
   name TEXT NOT NULL
 );
 
 
-#table 7: department
-CREATE TABLE IF NOT EXISTS department(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name TEXT NOT NULL
-);
+
 
 ####################################
 ##### Following are Relations ######
@@ -75,11 +77,11 @@ CREATE TABLE IF NOT EXISTS movie_genre(
   PRIMARY KEY (mid,gid),
 
   FOREIGN KEY (mid)
-    REFERENCES movielist(id)
+  REFERENCES movielist(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
 
   FOREIGN KEY (gid)
-    REFERENCES genre(id)
+  REFERENCES genre(id)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -99,7 +101,7 @@ CREATE TABLE IF NOT EXISTS produced_by(
 );
 
 #relation 3: cast
-CREATE TABLE IF NOT EXISTS cast(
+CREATE TABLE IF NOT EXISTS appears_on(
   mid INT,
   aid INT,
   character_name TEXT,

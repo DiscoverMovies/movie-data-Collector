@@ -22,15 +22,15 @@ package collector.main.database;
  *  limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.PrintWriter;
-import java.io.Reader;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.FileHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,9 +52,9 @@ public class ScriptRunner {
     private final boolean autoCommit;
 
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    private PrintWriter logWriter = new PrintWriter(System.out);
+    private PrintWriter logWriter = null;
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    private PrintWriter errorLogWriter = new PrintWriter(System.err);
+    private PrintWriter errorLogWriter = null;
 
     private String delimiter = DEFAULT_DELIMITER;
     private boolean fullLineDelimiter = false;
@@ -67,6 +67,30 @@ public class ScriptRunner {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.stopOnError = stopOnError;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/mm/yy HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        File logFile = new File("create_db.log");
+        File errorLogFile = new File("create_db_error.log");
+        try {
+            if (logFile.exists()) {
+                logWriter = new PrintWriter(new FileWriter(logFile, true));
+            } else {
+                logWriter = new PrintWriter(new FileWriter(logFile, false));
+            }
+        } catch(IOException e){
+            System.err.println("Unable to access or create the db_create log");
+        }
+        try {
+            if (logFile.exists()) {
+                errorLogWriter = new PrintWriter(new FileWriter(errorLogFile, true));
+            } else {
+                errorLogWriter = new PrintWriter(new FileWriter(errorLogFile, false));
+            }
+        } catch(IOException e){
+            System.err.println("Unable to access or create the  db_create error log");
+        }
+        println("\n-------\n" + dtf.format(now) + "\n-------\n");
+        printlnError("\n-------\n" + dtf.format(now) + "\n-------\n");
     }
 
     public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
@@ -226,9 +250,10 @@ public class ScriptRunner {
     }
 
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
+
     private void print(Object o) {
         if (logWriter != null) {
-            System.out.print(o);
+            logWriter.print(o);
         }
     }
 
