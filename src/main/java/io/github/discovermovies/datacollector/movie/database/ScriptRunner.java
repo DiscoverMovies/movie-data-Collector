@@ -1,4 +1,4 @@
-package io.github.discovermovies.datacollector.movie.main.database;
+package io.github.discovermovies.datacollector.movie.database;
 
 /*
 *   This File has been slightly modified by SIDHIN S THOMAS

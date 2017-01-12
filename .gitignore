@@ -17,3 +17,7 @@ hs_err_pid*
 
 #Log files
 *.log
+
+#Build directories
+/out/
+/build/

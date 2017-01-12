@@ -1,6 +1,6 @@
-package io.github.discovermovies.datacollector.movie.main;
+package io.github.discovermovies.datacollector.movie;
 
-import io.github.discovermovies.datacollector.movie.main.database.Database;
+import io.github.discovermovies.datacollector.movie.database.Database;
 
 import java.io.IOException;
 import java.sql.SQLException;

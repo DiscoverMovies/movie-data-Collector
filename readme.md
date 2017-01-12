@@ -17,3 +17,19 @@ Flags :
 
    * `-h` or `--help` to open help
    * `-R` or `--reset` to reset the database and fill again
+
+## Contributing
+
+### Handling source code
+
+* The project has gradle support to handle dependencies.<br>
+  Run the following command: *(if windows then* `gradlew.bat` *)*
+
+
+       $ gradlew build
+
+
+
+* Now create run configurations depending on your IDE. <br>
+
+  > Make sure your running directory has the `src/main/resources` folder in it.
