@@ -21,13 +21,13 @@ This will always create a schema by the name `disovermovie`
 ####Example
     
     
-    $ java -jar movie-data-collector -v
+    $ movie-data-collector -v
       Movie Data Collector Version 1.0
       Copyright (C) 2017 Sidhin S Thomas
       This is a free software; See source for copying conditions.
       There is no warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     
-    $ java -jar movie-data-collector -u root root
+    $ movie-data-collector -u root root
         Initializing.....
         Connecting to database...
         Successfully connected to database.
@@ -37,7 +37,7 @@ This will always create a schema by the name `disovermovie`
         Successfully executed.
         Exiting...
     
-    $ java -jar movie-data-collector --help
+    $ movie-data-collector --help
         usage: Movie-Data-Collector
          -d <Host URL>                URL of Mysql server host if it is not
                                       localhost
