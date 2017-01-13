@@ -31,8 +31,6 @@ package io.github.discovermovies.datacollector.movie.database;
 import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,7 +88,7 @@ public class ScriptRunner {
         } catch(IOException e){
             System.err.println("Unable to access or create the  db_create error log");
         }
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+        String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
         println("\n-------\n" + timeStamp + "\n-------\n");
         printlnError("\n-------\n" + timeStamp + "\n-------\n");
     }
