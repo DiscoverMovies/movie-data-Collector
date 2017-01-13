@@ -1,8 +1,7 @@
 # Movie Data Collector 
-|status|
---------
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f7f50ae234074097966a64e32600eba1)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&utm_medium=referral&utm_content=DiscoverMovies/movie-data-Collector&utm_campaign=badger)
-|[![Build Status](https://travis-ci.org/DiscoverMovies/movie-data-Collector.svg?branch=master)](https://travis-ci.org/DiscoverMovies/movie-data-Collector)|
+|Build status| Code Grade|
+|-------------|-------- |
+|[![Build Status](https://travis-ci.org/DiscoverMovies/movie-data-Collector.svg?branch=master)](https://travis-ci.org/DiscoverMovies/movie-data-Collector) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f7f50ae234074097966a64e32600eba1)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&utm_medium=referral&utm_content=DiscoverMovies/movie-data-Collector&utm_campaign=badger) |
 
 
 This is a java commandline application which will collect
