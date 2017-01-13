@@ -12,10 +12,10 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
-/*
+
 apply plugin: 'application'
-mainClassName = "io.github.discovermovies.datacollector.movie.Main"
-*/
+mainClassName = 'io.github.discovermovies.datacollector.movie.Main'
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -39,3 +39,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'io.github.discovermovies.datacollector.movie.Main'
+        )
+    }
+}

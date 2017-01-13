@@ -3,6 +3,7 @@ package io.github.discovermovies.datacollector.movie.database;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -63,9 +64,9 @@ public class Database {
         System.out.println("Successfully connected to database.");
         System.out.println("Creating schema if doesn't exist...");
         ScriptRunner runner = new ScriptRunner(connection, false, false);
-        String file = "resources\\SQL\\CreateDatabase.sql";
+        String file = "/SQL/CreateDatabase.sql";
         try {
-            runner.runScript(new BufferedReader(new FileReader(file)));
+            runner.runScript(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(file))));
         } catch (IOException e) {
             System.err.println("Couldn't locate the necessary file: " + file);
             throw e;
