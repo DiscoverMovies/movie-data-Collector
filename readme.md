@@ -46,6 +46,8 @@ This will always create a schema by the name `disovermovie`
          -v,--version                 Output the version and exit  
 
 
+## Database Schema
+![alt tag](https://github.com/DiscoverMovies/movie-data-Collector/blob/master/images/movie-list.png)
 ## Contributing
 
 ### Handling source code
