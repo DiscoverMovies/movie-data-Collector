@@ -56,7 +56,7 @@ public class Database {
             System.err.println("Mysql driver not found. Unable to connect");
             throw e;
         } catch (SQLException e) {
-            System.err.println("Unable to connect to the database");
+            System.err.println("Unable to connect to the database.\nReason:"+e.getMessage());
             throw e;
         }
 
