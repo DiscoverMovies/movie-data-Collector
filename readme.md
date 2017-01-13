@@ -11,16 +11,40 @@ This will always create a schema by the name `disovermovie`
 
 ## Usage
 
-use the parameters:
+    usage: Movie-Data-Collector
+     -d <Host URL>                URL of Mysql server host if it is not
+                                  localhost
+     -h,--help                    Show help
+     -u <Username and password>   Username followed by password
+     -v,--version                 Output the version and exit    
+     
+####Example
     
     
-    $ java -jar data-collector username password
+    $ java -jar movie-data-collector -v
+      Movie Data Collector Version 1.0
+      Copyright (C) 2017 Sidhin S Thomas
+      This is a free software; See source for copying conditions.
+      There is no warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     
+    $ java -jar movie-data-collector -u root root
+        Initializing.....
+        Connecting to database...
+        Successfully connected to database.
+        Creating schema if doesn't exist...
+        Connection Database Schema established
+        Database system working .... OK
+        Successfully executed.
+        Exiting...
     
-Flags :
+    $ java -jar movie-data-collector --help
+        usage: Movie-Data-Collector
+         -d <Host URL>                URL of Mysql server host if it is not
+                                      localhost
+         -h,--help                    Show help
+         -u <Username and password>   Username followed by password
+         -v,--version                 Output the version and exit  
 
-   * `-h` or `--help` to open help
-   * `-R` or `--reset` to reset the database and fill again
 
 ## Contributing
 
