@@ -1,9 +1,9 @@
 # Movie Data Collector 
-|Build status| Code Grade|
-|-------------|-------- |
-|[![Build Status](https://travis-ci.org/DiscoverMovies/movie-data-Collector.svg?branch=master)](https://travis-ci.org/DiscoverMovies/movie-data-Collector) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f7f50ae234074097966a64e32600eba1)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&utm_medium=referral&utm_content=DiscoverMovies/movie-data-Collector&utm_campaign=badger) |
+|Build status| Code Grade| Testing |
+|-------------|----------|---------|
+|[![Build Status](https://travis-ci.org/DiscoverMovies/movie-data-Collector.svg?branch=master)](https://travis-ci.org/DiscoverMovies/movie-data-Collector) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f7f50ae234074097966a64e32600eba1)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&utm_medium=referral&utm_content=DiscoverMovies/movie-data-Collector&utm_campaign=badger) | [![Coverage Status](https://coveralls.io/repos/github/DiscoverMovies/movie-data-Collector/badge.svg?branch=master)](https://coveralls.io/github/DiscoverMovies/movie-data-Collector?branch=master)|
 
-
+ 
 This is a java commandline application which will collect
 the data from **themoviedb.org** and fill it to the provided database.
 
