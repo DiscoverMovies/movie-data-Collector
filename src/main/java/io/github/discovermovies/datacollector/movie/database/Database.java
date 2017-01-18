@@ -31,10 +31,8 @@ public class Database {
     private  Connection connection;
 
     private final class SQL_STATEMENTS{
-        private SQL_STATEMENTS(){};
 
         public static final String INSERT_STATEMENT_END = ")";
-
 
         /* Statements to insert into Table */
         public static final String INSERT_MOVIE = "INSERT INTO MOVIES(id,imdbid,title,original_title,collection_id," +
@@ -45,6 +43,8 @@ public class Database {
         public static final String INSERT_DEPARTMENT = "INSERT INTO DEPARTMENT(id,name) VALUES( ";
         public static final String INSERT_CREW = "INSERT INTO CREW(id,name,deptid) VALUES( ";
         public static final String INSERT_ACTORS = "INSERT INTO ACTORS(id,name) VALUES( ";
+
+        private SQL_STATEMENTS(){};
 
     }
 
@@ -63,7 +63,7 @@ public class Database {
 
         System.out.println("Successfully connected to database.");
         System.out.println("Creating schema if doesn't exist...");
-        ScriptRunner runner = new ScriptRunner(connection, false, false);
+        ScriptRunner runner = new ScriptRunner(connection, false, true);
         String file = "/SQL/CreateDatabase.sql";
         try {
             runner.runScript(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(file))));
@@ -75,7 +75,4 @@ public class Database {
         System.out.println("Database system working .... OK");
     }
 
-    public void insertMovie(){
-
-    }
 }

@@ -1,6 +1,7 @@
 package io.github.discovermovies.datacollector.movie;
 
 import io.github.discovermovies.datacollector.movie.database.Database;
+import io.github.discovermovies.datacollector.movie.network.TheMovieDbApi;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -25,13 +26,16 @@ import java.util.List;
  *   You should have received a copy of the GNU General Public License
  *   along with movie-data-Collector.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Application {
+public class Application {
 
-    private  final static String APPLICATION_NAME = "Movie Data Collector";
-    private final static String VERSION = "1.0";
-    private final static String COPYRIGHT = "Copyright (C) 2017 Sidhin S Thomas\n" +
+    public final static String APPLICATION_NAME = "Movie Data Collector";
+    public final static String VERSION = "1.0";
+    public final static String COPYRIGHT = "Copyright (C) 2017 Sidhin S Thomas\n" +
             "This is a free software; See source for copying conditions.\n" +
             "There is no warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
+
+    public static final String CONFIG_FILE_NAME = "app.config";
+
 
     private Options options;
 
@@ -94,7 +98,18 @@ class Application {
         } catch (ClassNotFoundException e) {
             System.exit(12);
         }
-        //TODO Add insertion operation
+        TheMovieDbApi api = new TheMovieDbApi();
+        for(int i=0;i<5;++i) {
+            try {
+                api.getLatestMovie();
+                break;
+            } catch (IOException e) {
+                if(i<5)
+                    System.err.println("Retrying: " + i);
+                else
+                    System.exit(20);
+            }
+        }
         System.out.println("Successfully executed.\nExiting...");
     }
 

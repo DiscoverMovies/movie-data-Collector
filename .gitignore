@@ -21,3 +21,4 @@ hs_err_pid*
 #Build directories
 /out/
 /build/
+/app.config

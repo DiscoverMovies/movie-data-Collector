@@ -1,10 +1,10 @@
 package io.github.discovermovies.datacollector.movie;
 
-import io.github.discovermovies.datacollector.movie.database.Database;
-import io.github.discovermovies.datacollector.movie.Application;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.Properties;
+import java.util.Scanner;
+
+import static io.github.discovermovies.datacollector.movie.Application.CONFIG_FILE_NAME;
 
 
 
@@ -31,14 +31,47 @@ import java.util.ArrayList;
 /*
  * Exit codes:
  *  0 - success
- *  1 -
+ *  1 - Cant access/ create config file
  *  15 - commandline error
  *  10 - SQL error
  *  11 - Couldn't read file / access IO
  *  12 - Couldn't find the database driver for mysql
  */
 public class Main {
+
     public static void main(String []args){
+        try {
+            InputStream configInputStream = new FileInputStream(Application.CONFIG_FILE_NAME);
+        } catch (IOException e) {
+            try {
+                File file = new File(Application.CONFIG_FILE_NAME);
+                OutputStream os = new FileOutputStream(file);
+                InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE_NAME);
+                byte[] buffer = new byte[is.available()];
+                //noinspection ResultOfMethodCallIgnored
+                is.read(buffer);
+                os.write(buffer);
+                os.close();
+                is.close();
+            } catch (IOException e1) {
+                System.err.println("Fatal error: Cannot access/create config File");
+                System.exit(1);
+            }
+        }
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream(Application.CONFIG_FILE_NAME));
+            if(!properties.containsKey("Key")) {
+                System.out.println("API key is not Set.\nPlease input the key:");
+                Scanner scanner = new Scanner(System.in);
+                String key = scanner.nextLine();
+                properties.setProperty("Key", key);
+                properties.store(new FileOutputStream(Application.CONFIG_FILE_NAME), null);
+            }
+        } catch (IOException e) {
+            System.err.println("Fatal error: Cannot access/create config File");
+            System.exit(1);
+        }
         new Application().start(args);
     }
 }
