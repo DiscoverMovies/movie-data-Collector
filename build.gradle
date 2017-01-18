@@ -16,6 +16,15 @@ apply plugin: 'idea'
 apply plugin: 'application'
 mainClassName = 'io.github.discovermovies.datacollector.movie.Main'
 
+apply plugin: 'jacoco'
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
