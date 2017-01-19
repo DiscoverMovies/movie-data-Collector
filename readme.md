@@ -1,7 +1,7 @@
 # Movie Data Collector 
 |Build status| Code Grade| Testing |
 |-------------|----------|---------|
-|[![Build Status](https://travis-ci.org/DiscoverMovies/movie-data-Collector.svg?branch=master)](https://travis-ci.org/DiscoverMovies/movie-data-Collector) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f7f50ae234074097966a64e32600eba1)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&utm_medium=referral&utm_content=DiscoverMovies/movie-data-Collector&utm_campaign=badger) | [![Coverage Status](https://coveralls.io/repos/github/DiscoverMovies/movie-data-Collector/badge.svg?branch=master)](https://coveralls.io/github/DiscoverMovies/movie-data-Collector?branch=master)|
+|[![Build Status](https://travis-ci.org/DiscoverMovies/movie-data-Collector.svg?branch=master)](https://travis-ci.org/DiscoverMovies/movie-data-Collector) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3856d4747c924c0b88e64c700164ab8c)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DiscoverMovies/movie-data-Collector&amp;utm_campaign=Badge_Grade) | [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3856d4747c924c0b88e64c700164ab8c)](https://www.codacy.com/app/ParadoxZero/movie-data-Collector?utm_source=github.com&utm_medium=referral&utm_content=DiscoverMovies/movie-data-Collector&utm_campaign=Badge_Coverage)|
 
  
 This is a java commandline application which will collect
