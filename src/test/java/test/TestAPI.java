@@ -1,4 +1,5 @@
 package test;
+import io.github.discovermovies.datacollector.movie.Main;
 import io.github.discovermovies.datacollector.movie.network.TheMovieDbApi;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class TestAPI {
     @Test
     public void testLatestMovie(){
         {
+            Main.main(null);
             TheMovieDbApi api = new TheMovieDbApi();
             try {
                 String o = api.getLatestMovie();
