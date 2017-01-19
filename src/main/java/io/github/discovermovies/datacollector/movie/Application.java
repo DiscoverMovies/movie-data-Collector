@@ -48,7 +48,6 @@ public class Application {
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             printHelp();
-            System.exit(15);
         }
     }
 
@@ -91,12 +90,8 @@ public class Application {
         System.out.println("Initializing.....");
         try {
             Database db = new Database("jdbc:mysql://"+ hoststring +"/",username,password);
-        } catch (SQLException e) {
-            System.exit(10);
-        } catch (IOException e) {
-            System.exit(11);
-        } catch (ClassNotFoundException e) {
-            System.exit(12);
+        } catch (SQLException | ClassNotFoundException | IOException e) {
+            throw new RuntimeException();
         }
         TheMovieDbApi api = new TheMovieDbApi();
         for(int i=0;i<5;++i) {
@@ -107,7 +102,8 @@ public class Application {
                 if(i<5)
                     System.err.println("Retrying: " + i);
                 else
-                    System.exit(20);
+                    throw new RuntimeException("Cannot connect to server");
+
             }
         }
         System.out.println("Successfully executed.\nExiting...");
@@ -124,7 +120,6 @@ public class Application {
         if (cmd.hasOption("u")){
             String []argList = cmd.getOptionValues("u");
             startCollectingData(argList[0],argList[1]);
-            System.exit(0);
         }
         if (cmd.hasOption("d")){
             if(cmd.hasOption("u")){
@@ -134,7 +129,6 @@ public class Application {
             else{
                 System.err.println("Unspecified Credentials.\n use paramenter -u");
                 printHelp();
-                System.exit(15);
             }
         }
 

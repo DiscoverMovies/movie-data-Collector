@@ -44,15 +44,16 @@ public class TheMovieDbApi {
             properties.load(in);
         } catch (java.io.IOException e) {
             System.err.println("Fatal error: unable to open config file");
-            System.exit(1);
+            throw new RuntimeException();
         }
         apiKey = properties.getProperty("Key");
         apiKey = apiKey==null?"":apiKey;
     }
 
-    public void getLatestMovie() throws IOException {
+    public String getLatestMovie() throws IOException {
         String output = getResponseFromServer(URL+LATEST+API_KEY+apiKey);
         System.out.println("Output from server: \n" + output);
+        return output;
     }
 
     private String getResponseFromServer(String url) throws IOException {
@@ -62,7 +63,8 @@ public class TheMovieDbApi {
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (response.getEntity().getContent())));
 
-            String line,output = "";
+            String line;
+            String output = "";
             while ((line = br.readLine()) != null) {
                 output += line;
             }

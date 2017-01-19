@@ -68,7 +68,7 @@ public class Database {
         try {
             runner.runScript(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(file))));
         } catch (IOException e) {
-            System.err.println("Couldn't locate the necessary file: " + file);
+            System.err.println(e.getMessage());
             throw e;
         }
         System.out.println("Connection Database Schema established");

@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.Properties;
 import java.util.Scanner;
 
-import static io.github.discovermovies.datacollector.movie.Application.CONFIG_FILE_NAME;
-
 
 
 /*
@@ -46,7 +44,8 @@ public class Main {
             try {
                 File file = new File(Application.CONFIG_FILE_NAME);
                 OutputStream os = new FileOutputStream(file);
-                InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE_NAME);
+                InputStream is = Thread.currentThread().getContextClassLoader()
+                        .getResourceAsStream(Application.CONFIG_FILE_NAME);
                 byte[] buffer = new byte[is.available()];
                 //noinspection ResultOfMethodCallIgnored
                 is.read(buffer);
@@ -55,7 +54,7 @@ public class Main {
                 is.close();
             } catch (IOException e1) {
                 System.err.println("Fatal error: Cannot access/create config File");
-                System.exit(1);
+                throw new RuntimeException();
             }
         }
         Properties properties = new Properties();
@@ -70,7 +69,7 @@ public class Main {
             }
         } catch (IOException e) {
             System.err.println("Fatal error: Cannot access/create config File");
-            System.exit(1);
+            throw new RuntimeException();
         }
         new Application().start(args);
     }
