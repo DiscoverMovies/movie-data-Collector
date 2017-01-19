@@ -33,7 +33,7 @@ public class TestDatabase {
         try {
             Database db = new Database("jdbc:mysql://localhost/","root","root");
         } catch (Exception e){
-            Assert.assertEquals(e.getMessage().contains("Error running script"),true);
+            Assert.assertEquals(e.getMessage().contains("Error running script"),false);
         }
     }
 }

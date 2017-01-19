@@ -86,12 +86,13 @@ public class Application {
         startCollectingData(username, password,"localhost");
     }
 
-    private void startCollectingData(String username, String password, String hoststring){
+    private void startCollectingData(String username, String password, String hoststring) {
         System.out.println("Initializing.....");
         try {
             Database db = new Database("jdbc:mysql://"+ hoststring +"/",username,password);
         } catch (SQLException | ClassNotFoundException | IOException e) {
-            throw new RuntimeException();
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
         TheMovieDbApi api = new TheMovieDbApi();
         for(int i=0;i<5;++i) {
@@ -102,8 +103,8 @@ public class Application {
                 if(i<5)
                     System.err.println("Retrying: " + i);
                 else
-                    throw new RuntimeException("Cannot connect to server");
-
+                    System.err.println("Cannot connect to server");
+                    System.exit(1);
             }
         }
         System.out.println("Successfully executed.\nExiting...");

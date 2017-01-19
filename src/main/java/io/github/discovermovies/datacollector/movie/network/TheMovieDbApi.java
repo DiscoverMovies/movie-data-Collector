@@ -44,7 +44,7 @@ public class TheMovieDbApi {
             properties.load(in);
         } catch (java.io.IOException e) {
             System.err.println("Fatal error: unable to open config file");
-            throw new RuntimeException();
+            System.exit(1);
         }
         apiKey = properties.getProperty("Key");
         apiKey = apiKey==null?"":apiKey;

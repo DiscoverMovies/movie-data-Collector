@@ -25,19 +25,17 @@ import java.io.IOException;
  */
 public class TestAPI {
     TheMovieDbApi api;
-    @Test
-    public void testInitialization(){
-        TheMovieDbApi api = new TheMovieDbApi();
-    }
 
     @Test
     public void testLatestMovie(){
-        TheMovieDbApi api = new TheMovieDbApi();
-        try {
-            String o = api.getLatestMovie();
-            Assert.assertEquals(o.contains("id"),true);
-        } catch (IOException e) {
-            Assert.assertEquals("Exception",e.getMessage().contains("internet"),true);
+        {
+            TheMovieDbApi api = new TheMovieDbApi();
+            try {
+                String o = api.getLatestMovie();
+                Assert.assertEquals(o.contains("id"), true);
+            } catch (IOException e) {
+                Assert.assertEquals("Exception", e.getMessage().contains("internet"), true);
+            }
         }
     }
 
