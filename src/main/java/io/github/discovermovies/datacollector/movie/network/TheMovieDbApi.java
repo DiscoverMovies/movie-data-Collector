@@ -1,10 +1,13 @@
 package io.github.discovermovies.datacollector.movie.network;
 
 import io.github.discovermovies.datacollector.movie.Application;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.util.Properties;
@@ -29,7 +32,8 @@ import java.util.Properties;
  */
 public class TheMovieDbApi {
     private static final String URL = "https://api.themoviedb.org/3/movie/";
-    private static final String LATEST = "latest?";
+    private static final String LATEST = "latest";
+    private static final String PARAMETERS = "?";
     private static final String API_KEY = "api_key=";
 
 
@@ -50,29 +54,34 @@ public class TheMovieDbApi {
         apiKey = apiKey==null?"":apiKey;
     }
 
-    public String getLatestMovie() throws IOException {
-        String output = getResponseFromServer(URL+LATEST+API_KEY+apiKey);
+    public JSONObject getLatestMovie() throws IOException {
+        String output = getResponseFromServer(URL+LATEST+PARAMETERS+API_KEY+apiKey);
         System.out.println("Output from server: \n" + output);
-        return output;
+        return new JSONObject(output);
+    }
+
+    public JSONObject getMovie(String id) throws IOException {
+        String output = getResponseFromServer(URL+id+PARAMETERS+API_KEY + apiKey);
+        System.out.println("Output from server: \n" + URL+id+PARAMETERS+API_KEY + apiKey +"\n"+output);
+        return new JSONObject(output);
     }
 
     private String getResponseFromServer(String url) throws IOException {
         HttpGet request = new HttpGet(url);
-        try {
-            CloseableHttpResponse response = client.execute(request);
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (response.getEntity().getContent())));
-
-            String line;
-            String output = "";
-            while ((line = br.readLine()) != null) {
-                output += line;
-            }
-            return output;
-        } catch (IOException e) {
-            System.err.println("Error: Unable to connect to server");
-            throw e;
+        System.out.print("\nDownloading");
+        CloseableHttpResponse response = client.execute(request);
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                (response.getEntity().getContent())));
+        request.releaseConnection();
+        String line;
+        String output = "";
+        while ((line = br.readLine()) != null) {
+            System.out.print(".");
+            output += line;
         }
+        System.out.println();
+        return output;
+
     }
 
 

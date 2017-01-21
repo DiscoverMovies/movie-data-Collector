@@ -3,10 +3,13 @@ package io.github.discovermovies.datacollector.movie;
 import io.github.discovermovies.datacollector.movie.database.Database;
 import io.github.discovermovies.datacollector.movie.network.TheMovieDbApi;
 import org.apache.commons.cli.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
-import java.util.List;
 
 /*
  *   Copyright (C) 2017 Sidhin S Thomas
@@ -39,7 +42,7 @@ public class Application {
 
     private Options options;
 
-    void start(String[] args){
+    public void start(String[] args){
         options = getOptions();
         CommandLineParser parser = new DefaultParser();
         try{
@@ -88,26 +91,50 @@ public class Application {
 
     private void startCollectingData(String username, String password, String hoststring) {
         System.out.println("Initializing.....");
+        Database db = null;
         try {
-            Database db = new Database("jdbc:mysql://"+ hoststring +"/",username,password);
+            db = new Database("jdbc:mysql://"+ hoststring +"/",username,password);
         } catch (SQLException | ClassNotFoundException | IOException e) {
             System.err.println(e.getMessage());
             System.exit(1);
         }
         TheMovieDbApi api = new TheMovieDbApi();
-        for(int i=0;i<5;++i) {
+        int i = 0;
+        while(i<5) {
             try {
-                api.getLatestMovie();
-                break;
-            } catch (IOException e) {
-                if(i<5)
-                    System.err.println("Retrying: " + i);
-                else
-                    System.err.println("Cannot connect to server");
+                JSONObject obj = api.getLatestMovie();
+                int id_max =0;
+
+                try {
+                    id_max = (int) obj.get("id");
+                }catch (JSONException e){
+                    System.err.println(e.getMessage());
                     System.exit(1);
+                }
+                int id = db.getLatestID();
+                while (id<id_max){
+                    System.out.println("\n\nNext:"+id);
+                    obj = api.getMovie(""+id);
+                    db.insertRecord(obj);
+                    Thread.sleep(500);
+                    ++id;
+                }
+                if(id==id_max)
+                    break;
+            } catch (IOException e) {
+                System.err.println("Retrying: " + i);
+                ++i;
+            }catch (SQLException e){
+                System.err.println(e.getMessage());
+                System.exit(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        System.out.println("Successfully executed.\nExiting...");
+        if(i==5)
+            System.err.println("Failed to connect after " +i+" retries.");
+        else
+            System.out.println("Successfully executed.\nExiting...");
     }
 
     private void executeCommand(CommandLine cmd){

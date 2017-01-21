@@ -1,12 +1,16 @@
 package io.github.discovermovies.datacollector.movie.database;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.ObjectInput;
+import java.sql.*;
+
+import static javax.swing.UIManager.getInt;
 
 /*
  *   Copyright (C) 2017 Sidhin S Thomas
@@ -35,15 +39,18 @@ public class Database {
         public static final String INSERT_STATEMENT_END = ")";
 
         /* Statements to insert into Table */
-        public static final String INSERT_MOVIE = "INSERT INTO MOVIES(id,imdbid,title,original_title,collection_id," +
+        //TODO collection
+        public static final String INSERT_MOVIE = "INSERT IGNORE INTO MOVIE(id,imdbid,title,original_title," +
                 "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,tagline) VALUES( " ;
-        public static final String INSERT_GENRE = "INSERT INTO GENRE(id,name) VALUES( ";
-        public static final String INSERT_COLLECTIONS = "INSERT INTO COLLECTIONS(id,name) VALUES( ";
-        public static final String INSERT_PRODUCTION_COMPANIES = "INSERT INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
-        public static final String INSERT_DEPARTMENT = "INSERT INTO DEPARTMENT(id,name) VALUES( ";
-        public static final String INSERT_CREW = "INSERT INTO CREW(id,name,deptid) VALUES( ";
-        public static final String INSERT_ACTORS = "INSERT INTO ACTORS(id,name) VALUES( ";
+        public static final String INSERT_GENRE = "INSERT IGNORE INTO GENRE(id,name) VALUES( ";
+        public static final String INSERT_COLLECTIONS = "INSERT IGNORE INTO COLLECTIONS(id,name) VALUES( ";
+        public static final String INSERT_PRODUCTION_COMPANIES = "INSERT IGNORE INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
+        public static final String INSERT_DEPARTMENT = "INSERT IGNORE INTO DEPARTMENT(id,name) VALUES( ";
+        public static final String INSERT_CREW = "INSERT IGNORE INTO CREW(id,name,deptid) VALUES( ";
+        public static final String INSERT_ACTORS = "INSERT IGNORE INTO ACTORS(id,name) VALUES( ";
 
+        /* SELECT STATEMENTS */
+        public static final String GET_LATEST_ID = "SELECT max(id) FROM movie";
         private SQL_STATEMENTS(){};
 
     }
@@ -75,4 +82,104 @@ public class Database {
         System.out.println("Database system working .... OK");
     }
 
+    public int getLatestID() throws SQLException {
+        Statement stm = connection.createStatement();
+        stm.execute(SQL_STATEMENTS.GET_LATEST_ID);
+        ResultSet rs = stm.getResultSet();
+        if(!rs.first())
+            return 0;
+        return rs.getInt(1);
+    }
+
+    public void insertRecord(JSONObject data){
+        try{
+            insertMovie(data);
+            try {
+                for (Object o : data.getJSONArray("genres")) {
+                    JSONObject genre = (JSONObject) o;
+                    insertGenre(genre.get("id"), genre.get("name").toString().replace("'","\\'"));
+                }
+            }catch (JSONException e) {
+                System.err.println("No genre record found.");
+            }
+            try {
+                for (Object o : data.getJSONArray("production_companies")) {
+                    JSONObject genre = (JSONObject) o;
+                    insertProduction(genre.get("id"), genre.get("name").toString().replace("'","\\'"));
+                }
+            }catch (JSONException e) {
+                System.err.println("No Production record found.");
+            }
+            try {
+                JSONObject object = data.getJSONObject("belongs_to_collection");
+                //TODO insert data
+            }catch (JSONException e) {
+                System.err.println("No collection record found.");
+            }
+        }
+        catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void insertMovie(JSONObject data) throws SQLException {
+        try {
+            String id = data.get("id") + ",";
+            String imdbid = "'" + data.get("imdb_id") + "',";
+            String title = "'" + data.get("title").toString().replace("'","\\'") +"',";
+            String original_title = "'" + data.get("original_title").toString().replace("'","\\'") + "',";
+            //TODO collection
+            String languages = "'";
+            for (Object o : data.getJSONArray("spoken_languages")) {
+                JSONObject object = (JSONObject) o;
+                languages += object.get("iso_639_1");
+            }
+            languages += "',";
+            String overview = "'" + data.get("overview").toString().replace("'","\\'") + "',";
+            String popularity = data.get("popularity") + ",";
+            String poster_url = "'" + data.get("poster_path") + "',";
+            String release = "'" + data.get("release_date") + "',";
+            String runtime = data.get("runtime") + ",";
+            String vote_avg = data.get("vote_average") + ",";
+            String vote_count = data.get("vote_count") + ",";
+            String tagline = "'" + data.get("tagline").toString().replace("'","\\'") + "'";
+            String statement = SQL_STATEMENTS.INSERT_MOVIE + id + imdbid + title + original_title + languages + overview
+                    + popularity + poster_url + release + runtime + vote_avg + vote_count + tagline
+                    + SQL_STATEMENTS.INSERT_STATEMENT_END;
+            System.out.println(statement);
+            connection.createStatement().execute(statement);
+        } catch(JSONException e){
+            System.err.println("Valid movie entry not found.");
+        }
+    }
+
+    public void insertCrew(String id, String name, String deptid) throws SQLException {
+        connection.createStatement().execute(SQL_STATEMENTS.INSERT_CREW + id +",'"+name+"'" +
+                ""+deptid+SQL_STATEMENTS.INSERT_STATEMENT_END);
+
+    }
+
+    public void insertActor(String id,String name) throws SQLException {
+        connection.createStatement().execute(SQL_STATEMENTS.INSERT_ACTORS + id +",'"+name+"'" +
+                SQL_STATEMENTS.INSERT_STATEMENT_END);
+    }
+    public void insertGenre(Object id, Object name) throws SQLException {
+        String statement = SQL_STATEMENTS.INSERT_GENRE + id +",'"+name+"'" +
+                SQL_STATEMENTS.INSERT_STATEMENT_END;
+        connection.createStatement().execute(statement);
+    }
+    public void insertCollection(String id,String name) throws SQLException {
+        connection.createStatement().execute(SQL_STATEMENTS.INSERT_COLLECTIONS + id +",'"+name+"'" +
+                SQL_STATEMENTS.INSERT_STATEMENT_END);
+    }
+    public void insertProduction(Object id, Object name) throws SQLException {
+        String statement = SQL_STATEMENTS.INSERT_PRODUCTION_COMPANIES + id +",'"+name+"'" +
+                SQL_STATEMENTS.INSERT_STATEMENT_END;
+        System.out.println(statement);
+        connection.createStatement().execute(statement);
+    }
+    public void insertDepartment(String id,String name) throws SQLException {
+        connection.createStatement().execute(SQL_STATEMENTS.INSERT_DEPARTMENT + id +",'"+name+"'" +
+                SQL_STATEMENTS.INSERT_STATEMENT_END);
+    }
 }

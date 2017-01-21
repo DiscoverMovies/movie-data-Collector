@@ -4,8 +4,8 @@ CREATE DATABASE IF NOT EXISTS discoverMovie;
 USE discoverMovie;
 
 
-# table 1 : MovieList
-CREATE TABLE IF NOT EXISTS movielist(
+# table 1 : movie
+CREATE TABLE IF NOT EXISTS movie(
   id INT PRIMARY KEY ,
   imdbid CHAR(9) NOT NULL UNIQUE ,
   title TEXT NOT NULL ,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS genre (
 
 #table 3: Collections
 CREATE TABLE IF NOT EXISTS collections(
-  id INT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY ,
   name varchar(100) NOT NULL UNIQUE
 );
 
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS movie_genre(
   PRIMARY KEY (mid,gid),
 
   FOREIGN KEY (mid)
-  REFERENCES movielist(id)
+  REFERENCES movie(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
 
   FOREIGN KEY (gid)
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS produced_by(
   PRIMARY KEY (mid,pid),
 
   FOREIGN KEY (mid)
-  REFERENCES movielist(id)
+  REFERENCES movie(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
 
   FOREIGN KEY (pid)
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS appears_on(
   PRIMARY KEY (mid,aid),
 
   FOREIGN KEY (mid)
-  REFERENCES movielist(id)
+  REFERENCES movie(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
 
   FOREIGN KEY (aid)
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS worked_on(
   PRIMARY KEY (mid,cid),
 
   FOREIGN KEY (mid)
-  REFERENCES movielist(id)
+  REFERENCES movie(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
 
   FOREIGN KEY (cid)
