@@ -6,9 +6,7 @@ import org.apache.commons.cli.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.io.IOException;
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 /*
