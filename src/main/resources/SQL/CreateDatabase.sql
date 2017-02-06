@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS genre (
 #table 3: Collections
 CREATE TABLE IF NOT EXISTS collections(
   id INT PRIMARY KEY ,
-  name varchar(100) NOT NULL UNIQUE
+  name varchar(100) NOT NULL UNIQUE,
+  poster_url varchar(100)
 );
 
 #table 4: ProductionCompanies

@@ -1,13 +1,11 @@
 package io.github.discovermovies.datacollector.movie.database;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
 import java.sql.*;
 
 import static javax.swing.UIManager.getInt;
@@ -36,18 +34,23 @@ public class Database {
 
     private final class SQL_STATEMENTS{
 
-        public static final String INSERT_STATEMENT_END = ")";
+        public static final String END = ")";
 
         /* Statements to insert into Table */
-        //TODO collection
         public static final String INSERT_MOVIE = "INSERT IGNORE INTO MOVIE(id,imdbid,title,original_title," +
                 "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,tagline) VALUES( " ;
         public static final String INSERT_GENRE = "INSERT IGNORE INTO GENRE(id,name) VALUES( ";
-        public static final String INSERT_COLLECTIONS = "INSERT IGNORE INTO COLLECTIONS(id,name) VALUES( ";
+        public static final String INSERT_COLLECTIONS = "INSERT IGNORE INTO COLLECTIONS(id,name,poster_url) VALUES( ";
         public static final String INSERT_PRODUCTION_COMPANIES = "INSERT IGNORE INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
         public static final String INSERT_DEPARTMENT = "INSERT IGNORE INTO DEPARTMENT(id,name) VALUES( ";
         public static final String INSERT_CREW = "INSERT IGNORE INTO CREW(id,name,deptid) VALUES( ";
         public static final String INSERT_ACTORS = "INSERT IGNORE INTO ACTORS(id,name) VALUES( ";
+
+
+        public static final String INSERT_MOVIE_GENRE = "INSERT INTO movie_genre(mid,gid) VALUES( ";
+        public static final String INSERT_PRODUCED_BY = "INSERT INTO produced_by(mid,pid) VALUES( ";
+        public static final String INSERT_APEARS_ON = "INSERT INTO appears_on(mid,aid,character_name) VALUES( ";
+        public static final String INSERT_WORKED_ON = "INSERT INTO worked_on(mid,cid) VALUES( ";
 
         /* SELECT STATEMENTS */
         public static final String GET_LATEST_ID = "SELECT max(id) FROM movie";
@@ -67,7 +70,7 @@ public class Database {
             System.err.println("Unable to connect to the database.\nReason:"+e.getMessage());
             throw e;
         }
-
+        connection.setAutoCommit(true);
         System.out.println("Successfully connected to database.");
         System.out.println("Creating schema if doesn't exist...");
         ScriptRunner runner = new ScriptRunner(connection, false, true);
@@ -94,31 +97,37 @@ public class Database {
     public void insertRecord(JSONObject data){
         try{
             insertMovie(data);
+            String mid = data.get("id").toString();
             try {
                 for (Object o : data.getJSONArray("genres")) {
                     JSONObject genre = (JSONObject) o;
                     insertGenre(genre.get("id"), genre.get("name").toString().replace("'","\\'"));
+                    insertMovieGenre(mid,genre.get("id").toString());
                 }
             }catch (JSONException e) {
                 System.err.println("No genre record found.");
             }
             try {
                 for (Object o : data.getJSONArray("production_companies")) {
-                    JSONObject genre = (JSONObject) o;
-                    insertProduction(genre.get("id"), genre.get("name").toString().replace("'","\\'"));
+                    JSONObject production = (JSONObject) o;
+                    insertProduction(production.get("id"), production.get("name").toString().replace("'","\\'"));
+                    insertProducedBy(mid, production.get("id").toString());
                 }
             }catch (JSONException e) {
                 System.err.println("No Production record found.");
             }
             try {
                 JSONObject object = data.getJSONObject("belongs_to_collection");
-                //TODO insert data
+                insertCollection(object.get("id"),object.get("name"),object.get("poster_path"));
             }catch (JSONException e) {
                 System.err.println("No collection record found.");
             }
         }
         catch (SQLException e) {
             System.err.println(e.getMessage());
+        }
+        catch (JSONException e){
+
         }
     }
 
@@ -145,41 +154,63 @@ public class Database {
             String tagline = "'" + data.get("tagline").toString().replace("'","\\'") + "'";
             String statement = SQL_STATEMENTS.INSERT_MOVIE + id + imdbid + title + original_title + languages + overview
                     + popularity + poster_url + release + runtime + vote_avg + vote_count + tagline
-                    + SQL_STATEMENTS.INSERT_STATEMENT_END;
-            System.out.println(statement);
-            connection.createStatement().execute(statement);
+                    + SQL_STATEMENTS.END;
+            executeStatement(statement);
         } catch(JSONException e){
             System.err.println("Valid movie entry not found.");
         }
     }
 
     public void insertCrew(String id, String name, String deptid) throws SQLException {
-        connection.createStatement().execute(SQL_STATEMENTS.INSERT_CREW + id +",'"+name+"'" +
-                ""+deptid+SQL_STATEMENTS.INSERT_STATEMENT_END);
+        executeStatement(SQL_STATEMENTS.INSERT_CREW + id +",'"+name+"'" +
+                ""+deptid+SQL_STATEMENTS.END);
 
     }
 
     public void insertActor(String id,String name) throws SQLException {
-        connection.createStatement().execute(SQL_STATEMENTS.INSERT_ACTORS + id +",'"+name+"'" +
-                SQL_STATEMENTS.INSERT_STATEMENT_END);
+        executeStatement(SQL_STATEMENTS.INSERT_ACTORS + id +",'"+name+"'" +
+                SQL_STATEMENTS.END);
     }
+
     public void insertGenre(Object id, Object name) throws SQLException {
-        String statement = SQL_STATEMENTS.INSERT_GENRE + id +",'"+name+"'" +
-                SQL_STATEMENTS.INSERT_STATEMENT_END;
-        connection.createStatement().execute(statement);
+        executeStatement(SQL_STATEMENTS.INSERT_GENRE + id +",'"+name+"'" +
+                SQL_STATEMENTS.END);
     }
-    public void insertCollection(String id,String name) throws SQLException {
-        connection.createStatement().execute(SQL_STATEMENTS.INSERT_COLLECTIONS + id +",'"+name+"'" +
-                SQL_STATEMENTS.INSERT_STATEMENT_END);
+
+    public void insertCollection(Object id, Object name, Object poster) throws SQLException {
+        executeStatement(SQL_STATEMENTS.INSERT_COLLECTIONS + id +",'"+name+"','" +
+                poster + "'" + SQL_STATEMENTS.END);
     }
+
     public void insertProduction(Object id, Object name) throws SQLException {
-        String statement = SQL_STATEMENTS.INSERT_PRODUCTION_COMPANIES + id +",'"+name+"'" +
-                SQL_STATEMENTS.INSERT_STATEMENT_END;
+        executeStatement(SQL_STATEMENTS.INSERT_PRODUCTION_COMPANIES + id +",'"+name+"'" +
+                SQL_STATEMENTS.END);
+    }
+
+    public void insertDepartment(String id,String name) throws SQLException {
+        executeStatement(SQL_STATEMENTS.INSERT_DEPARTMENT + id +",'"+name+"'" +
+                SQL_STATEMENTS.END);
+    }
+
+    private void insertWorkedOn(String mid, String objectid) throws SQLException {
+        executeStatement(SQL_STATEMENTS.INSERT_WORKED_ON + mid +"," + objectid + SQL_STATEMENTS.END);
+    }
+
+    private void insertApearsOn(String mid, String objectid,String character) throws SQLException {
+        executeStatement(SQL_STATEMENTS.INSERT_APEARS_ON + mid +"," + objectid +
+                ",'" + character + "'" + SQL_STATEMENTS.END);
+    }
+
+    private void insertProducedBy(String mid, String objectid) throws SQLException {
+        executeStatement(SQL_STATEMENTS.INSERT_PRODUCED_BY + mid +"," + objectid + SQL_STATEMENTS.END);
+    }
+
+    private void insertMovieGenre(String mid, String objectid) throws SQLException {
+        executeStatement(SQL_STATEMENTS.INSERT_MOVIE_GENRE + mid +"," + objectid + SQL_STATEMENTS.END);
+    }
+
+    private void executeStatement(String statement) throws SQLException {
         System.out.println(statement);
         connection.createStatement().execute(statement);
-    }
-    public void insertDepartment(String id,String name) throws SQLException {
-        connection.createStatement().execute(SQL_STATEMENTS.INSERT_DEPARTMENT + id +",'"+name+"'" +
-                SQL_STATEMENTS.INSERT_STATEMENT_END);
     }
 }
