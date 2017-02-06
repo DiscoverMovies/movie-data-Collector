@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /*
  *   Copyright (C) 2017 Sidhin S Thomas
@@ -35,7 +36,13 @@ public class Application {
             "This is a free software; See source for copying conditions.\n" +
             "There is no warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
 
+
     public static final String CONFIG_FILE_NAME = "app.config";
+    public static final String [] KEY_LIST = {
+            "Key", "API_log", "API_Err_log", "Database_log", "Database_err_log", "Database_create_log"
+    };
+    public static final Properties properties = new Properties();
+    public static final boolean DEBUG = true ;
 
 
     private Options options;
@@ -106,12 +113,14 @@ public class Application {
                 try {
                     id_max = (int) obj.get("id");
                 }catch (JSONException e){
-                    System.err.println(e.getMessage());
+                    api.log.log(e.getMessage());
                     System.exit(1);
                 }
                 int id = db.getLatestID();
                 while (id<id_max){
-                    System.out.println("\n\nNext:"+id);
+                    if(DEBUG) {
+                        System.out.println("\n\nNext:" + id);
+                    }
                     obj = api.getMovie(""+id);
                     db.insertRecord(obj);
                     Thread.sleep(500);
@@ -120,19 +129,19 @@ public class Application {
                 if(id==id_max)
                     break;
             } catch (IOException e) {
-                System.err.println("Retrying: " + i);
+                api.errLog.log("Retrying: " + i);
                 ++i;
             }catch (SQLException e){
-                System.err.println(e.getMessage());
+                db.errLog.log(e.getMessage());
                 System.exit(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         if(i==5)
-            System.err.println("Failed to connect after " +i+" retries.");
+            api.errLog.log("Failed to connect after " +i+" retries.");
         else
-            System.out.println("Successfully executed.\nExiting...");
+            api.log.log("\n\n===========\nSuccessfully executed.\nExiting...\n\n");
     }
 
     private void executeCommand(CommandLine cmd){

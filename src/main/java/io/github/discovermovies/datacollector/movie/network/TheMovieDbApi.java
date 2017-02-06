@@ -1,6 +1,8 @@
 package io.github.discovermovies.datacollector.movie.network;
 
 import io.github.discovermovies.datacollector.movie.Application;
+import io.github.discovermovies.datacollector.movie.ConfigValues;
+import io.github.discovermovies.datacollector.movie.Logger;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -8,7 +10,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.Properties;
+
+import static io.github.discovermovies.datacollector.movie.Application.properties;
 
 /*
  *   Copyright (C) 2017 Sidhin S Thomas
@@ -34,39 +37,38 @@ public class TheMovieDbApi {
     private static final String PARAMETERS = "?";
     private static final String API_KEY = "api_key=";
 
-
     private CloseableHttpClient client;
     private String apiKey = null;
 
+    public Logger log ;
+    public Logger errLog;
     public TheMovieDbApi(){
         client = HttpClients.createDefault();
-        Properties properties = new Properties();
-        try {
-            InputStream in = new FileInputStream(Application.CONFIG_FILE_NAME);
-            properties.load(in);
-        } catch (java.io.IOException e) {
-            System.err.println("Fatal error: unable to open config file");
-            System.exit(1);
-        }
         apiKey = properties.getProperty("Key");
         apiKey = apiKey==null?"":apiKey;
+        String apiLogFileName = properties.getProperty(Application.KEY_LIST[ConfigValues.APT_LOG]);
+        String apiErrorLogName = properties.getProperty(Application.KEY_LIST[ConfigValues.API_ERR_LOG]);
+        log = new Logger(apiLogFileName,false,true);
+        errLog = new Logger(apiErrorLogName,true,true);
     }
 
     public JSONObject getLatestMovie() throws IOException {
         String output = getResponseFromServer(URL+LATEST+PARAMETERS+API_KEY+apiKey);
-        System.out.println("Output from server: \n" + output);
+        log.log("Output from server: \n" + output);
         return new JSONObject(output);
     }
 
     public JSONObject getMovie(String id) throws IOException {
         String output = getResponseFromServer(URL+id+PARAMETERS+API_KEY + apiKey);
-        System.out.println("Output from server: \n" + URL+id+PARAMETERS+API_KEY + apiKey +"\n"+output);
+        log.log("Output from server: \n" + URL+id+PARAMETERS+API_KEY + apiKey +"\n"+output);
         return new JSONObject(output);
     }
 
     private String getResponseFromServer(String url) throws IOException {
         HttpGet request = new HttpGet(url);
-        System.out.print("\nDownloading");
+        if(Application.DEBUG) {
+            System.out.print("\nDownloading");
+        }
         CloseableHttpResponse response = client.execute(request);
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 (response.getEntity().getContent())));
@@ -77,7 +79,9 @@ public class TheMovieDbApi {
             System.out.print(".");
             output += line;
         }
-        System.out.println();
+        if(Application.DEBUG) {
+            System.out.println();
+        }
         return output;
 
     }

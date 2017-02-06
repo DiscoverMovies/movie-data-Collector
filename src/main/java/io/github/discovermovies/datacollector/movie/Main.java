@@ -1,8 +1,13 @@
 package io.github.discovermovies.datacollector.movie;
 
-import java.io.*;
-import java.util.Properties;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Scanner;
+
+import static io.github.discovermovies.datacollector.movie.Application.KEY_LIST;
+import static io.github.discovermovies.datacollector.movie.Application.properties;
 
 
 
@@ -37,39 +42,31 @@ import java.util.Scanner;
  */
 public class Main {
 
+
     public static void main(String []args){
-        try {
-            InputStream configInputStream = new FileInputStream(Application.CONFIG_FILE_NAME);
-        } catch (IOException e) {
+        File file = new File(Application.CONFIG_FILE_NAME);
+        if(!file.exists()){
             try {
-                File file = new File(Application.CONFIG_FILE_NAME);
-                OutputStream os = new FileOutputStream(file);
-                InputStream is = Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream(Application.CONFIG_FILE_NAME);
-                byte[] buffer = new byte[is.available()];
-                //noinspection ResultOfMethodCallIgnored
-                is.read(buffer);
-                os.write(buffer);
-                os.close();
-                is.close();
-            } catch (IOException e1) {
-                System.err.println("Fatal error: Cannot access/create config File");
-                throw new RuntimeException();
+                file.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Cannot create configuration file.\n"+e.getMessage());
+                System.exit(1);
             }
         }
-        Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(Application.CONFIG_FILE_NAME));
-            if(!properties.containsKey("Key")) {
-                System.out.println("API key is not Set.\nPlease input the key:");
-                Scanner scanner = new Scanner(System.in);
-                String key = scanner.nextLine();
-                properties.setProperty("Key", key);
-                properties.store(new FileOutputStream(Application.CONFIG_FILE_NAME), null);
+            Scanner scanner = new Scanner(System.in);
+            for(String key:KEY_LIST){
+                if(!properties.containsKey(key)) {
+                    System.out.println(key +" is not Set.\nPlease input the value:");
+                    String value = scanner.nextLine();
+                    properties.setProperty(key, value);
+                }
             }
+            properties.store(new FileOutputStream(Application.CONFIG_FILE_NAME), null);
         } catch (IOException e) {
-            System.err.println("Fatal error: Cannot access/create config File");
-            throw new RuntimeException();
+            System.err.println("Fatal error: Cannot access/create config File\n\n"+e.getMessage()+"\n\n");
+            System.exit(1);
         }
         new Application().start(args);
     }

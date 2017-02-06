@@ -1,5 +1,8 @@
 package io.github.discovermovies.datacollector.movie.database;
 
+import io.github.discovermovies.datacollector.movie.Application;
+import io.github.discovermovies.datacollector.movie.ConfigValues;
+import io.github.discovermovies.datacollector.movie.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,37 +34,16 @@ import static javax.swing.UIManager.getInt;
 
 public class Database {
     private  Connection connection;
-
-    private final class SQL_STATEMENTS{
-
-        public static final String END = ")";
-
-        /* Statements to insert into Table */
-        public static final String INSERT_MOVIE = "INSERT IGNORE INTO MOVIE(id,imdbid,title,original_title," +
-                "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,tagline) VALUES( " ;
-        public static final String INSERT_GENRE = "INSERT IGNORE INTO GENRE(id,name) VALUES( ";
-        public static final String INSERT_COLLECTIONS = "INSERT IGNORE INTO COLLECTIONS(id,name,poster_url) VALUES( ";
-        public static final String INSERT_PRODUCTION_COMPANIES = "INSERT IGNORE INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
-        public static final String INSERT_DEPARTMENT = "INSERT IGNORE INTO DEPARTMENT(id,name) VALUES( ";
-        public static final String INSERT_CREW = "INSERT IGNORE INTO CREW(id,name,deptid) VALUES( ";
-        public static final String INSERT_ACTORS = "INSERT IGNORE INTO ACTORS(id,name) VALUES( ";
-
-
-        public static final String INSERT_MOVIE_GENRE = "INSERT INTO movie_genre(mid,gid) VALUES( ";
-        public static final String INSERT_PRODUCED_BY = "INSERT INTO produced_by(mid,pid) VALUES( ";
-        public static final String INSERT_APEARS_ON = "INSERT INTO appears_on(mid,aid,character_name) VALUES( ";
-        public static final String INSERT_WORKED_ON = "INSERT INTO worked_on(mid,cid) VALUES( ";
-
-        /* SELECT STATEMENTS */
-        public static final String GET_LATEST_ID = "SELECT max(id) FROM movie";
-        private SQL_STATEMENTS(){};
-
-    }
+    public Logger log,errLog ;
 
     public Database(String databaseConnection, String username, String password) throws SQLException, IOException, ClassNotFoundException {
+        String logName = Application.properties.getProperty(Application.KEY_LIST[ConfigValues.DATABASE_LOG]);
+        String errLogName = Application.properties.getProperty(Application.KEY_LIST[ConfigValues.DATABASE_ERR_LOG]);
+        log = new Logger(logName,false,true);
+        errLog = new Logger(errLogName,true,true);
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Connecting to database...");
+            log.log("Connecting to database...");
             connection = DriverManager.getConnection(databaseConnection,username,password);
         } catch (ClassNotFoundException e) {
             System.err.println("Mysql driver not found. Unable to connect");
@@ -71,8 +53,8 @@ public class Database {
             throw e;
         }
         connection.setAutoCommit(true);
-        System.out.println("Successfully connected to database.");
-        System.out.println("Creating schema if doesn't exist...");
+        log.log("Successfully connected to database.");
+        log.log("Creating schema if doesn't exist...");
         ScriptRunner runner = new ScriptRunner(connection, false, true);
         String file = "/SQL/CreateDatabase.sql";
         try {
@@ -81,8 +63,8 @@ public class Database {
             System.err.println(e.getMessage());
             throw e;
         }
-        System.out.println("Connection Database Schema established");
-        System.out.println("Database system working .... OK");
+        log.log("Connection Database Schema established");
+        log.log("Database system working .... OK");
     }
 
     public int getLatestID() throws SQLException {
@@ -210,7 +192,34 @@ public class Database {
     }
 
     private void executeStatement(String statement) throws SQLException {
-        System.out.println(statement);
+        log.log(statement);
         connection.createStatement().execute(statement);
+    }
+
+    private final class SQL_STATEMENTS{
+
+        static final String END = ")";
+
+        /* Statements to insert into Table */
+        static final String INSERT_MOVIE = "INSERT IGNORE INTO MOVIE(id,imdbid,title,original_title," +
+                "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,tagline) VALUES( " ;
+        static final String INSERT_GENRE = "INSERT IGNORE INTO GENRE(id,name) VALUES( ";
+        static final String INSERT_COLLECTIONS = "INSERT IGNORE INTO COLLECTIONS(id,name,poster_url) VALUES( ";
+        static final String INSERT_PRODUCTION_COMPANIES = "INSERT IGNORE INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
+        static final String INSERT_DEPARTMENT = "INSERT IGNORE INTO DEPARTMENT(id,name) VALUES( ";
+        static final String INSERT_CREW = "INSERT IGNORE INTO CREW(id,name,deptid) VALUES( ";
+        static final String INSERT_ACTORS = "INSERT IGNORE INTO ACTORS(id,name) VALUES( ";
+
+
+        static final String INSERT_MOVIE_GENRE = "INSERT INTO movie_genre(mid,gid) VALUES( ";
+        static final String INSERT_PRODUCED_BY = "INSERT INTO produced_by(mid,pid) VALUES( ";
+        static final String INSERT_APEARS_ON = "INSERT INTO appears_on(mid,aid,character_name) VALUES( ";
+        static final String INSERT_WORKED_ON = "INSERT INTO worked_on(mid,cid) VALUES( ";
+
+        /* SELECT STATEMENTS */
+        static final String GET_LATEST_ID = "SELECT max(id) FROM movie";
+
+        private SQL_STATEMENTS(){};
+
     }
 }
