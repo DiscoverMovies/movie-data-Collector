@@ -105,21 +105,24 @@ public class Database {
                 System.err.println("No collection record found.");
             }
         }
-        catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
         catch (JSONException e){
 
         }
     }
 
-    public void insertMovie(JSONObject data) throws SQLException {
+    public void insertMovie(JSONObject data) {
         try {
             String id = data.get("id") + ",";
             String imdbid = "'" + data.get("imdb_id") + "',";
             String title = "'" + data.get("title").toString().replace("'","\\'") +"',";
             String original_title = "'" + data.get("original_title").toString().replace("'","\\'") + "',";
-            //TODO collection
+            String collection ;
+            try {
+                JSONObject object = data.getJSONObject("belongs_to_collection");
+                collection = object.get("id").toString()+",";
+            }catch (JSONException e) {
+                collection = "NULL,";
+            }
             String languages = "'";
             for (Object o : data.getJSONArray("spoken_languages")) {
                 JSONObject object = (JSONObject) o;
@@ -135,7 +138,7 @@ public class Database {
             String vote_count = data.get("vote_count") + ",";
             String tagline = "'" + data.get("tagline").toString().replace("'","\\'") + "'";
             String statement = SQL_STATEMENTS.INSERT_MOVIE + id + imdbid + title + original_title + languages + overview
-                    + popularity + poster_url + release + runtime + vote_avg + vote_count + tagline
+                    + popularity + poster_url + release + runtime + vote_avg + vote_count +collection+ tagline
                     + SQL_STATEMENTS.END;
             executeStatement(statement);
         } catch(JSONException e){
@@ -143,78 +146,83 @@ public class Database {
         }
     }
 
-    public void insertCrew(String id, String name, String deptid) throws SQLException {
+    public void insertCrew(String id, String name, String deptid) {
         executeStatement(SQL_STATEMENTS.INSERT_CREW + id +",'"+name+"'" +
-                ""+deptid+SQL_STATEMENTS.END);
+                ","+deptid+ SQL_STATEMENTS.END);
 
     }
 
-    public void insertActor(String id,String name) throws SQLException {
+    public void insertActor(String id,String name) {
         executeStatement(SQL_STATEMENTS.INSERT_ACTORS + id +",'"+name+"'" +
                 SQL_STATEMENTS.END);
     }
 
-    public void insertGenre(Object id, Object name) throws SQLException {
+    public void insertGenre(Object id, Object name){
         executeStatement(SQL_STATEMENTS.INSERT_GENRE + id +",'"+name+"'" +
                 SQL_STATEMENTS.END);
     }
 
-    public void insertCollection(Object id, Object name, Object poster) throws SQLException {
+    public void insertCollection(Object id, Object name, Object poster) {
         executeStatement(SQL_STATEMENTS.INSERT_COLLECTIONS + id +",'"+name+"','" +
                 poster + "'" + SQL_STATEMENTS.END);
     }
 
-    public void insertProduction(Object id, Object name) throws SQLException {
+    public void insertProduction(Object id, Object name){
         executeStatement(SQL_STATEMENTS.INSERT_PRODUCTION_COMPANIES + id +",'"+name+"'" +
                 SQL_STATEMENTS.END);
     }
 
-    public void insertDepartment(String id,String name) throws SQLException {
+    public void insertDepartment(String id,String name){
         executeStatement(SQL_STATEMENTS.INSERT_DEPARTMENT + id +",'"+name+"'" +
                 SQL_STATEMENTS.END);
     }
 
-    private void insertWorkedOn(String mid, String objectid) throws SQLException {
+    private void insertWorkedOn(String mid, String objectid){
         executeStatement(SQL_STATEMENTS.INSERT_WORKED_ON + mid +"," + objectid + SQL_STATEMENTS.END);
     }
 
-    private void insertApearsOn(String mid, String objectid,String character) throws SQLException {
+    private void insertApearsOn(String mid, String objectid,String character){
         executeStatement(SQL_STATEMENTS.INSERT_APEARS_ON + mid +"," + objectid +
                 ",'" + character + "'" + SQL_STATEMENTS.END);
     }
 
-    private void insertProducedBy(String mid, String objectid) throws SQLException {
+    private void insertProducedBy(String mid, String objectid){
         executeStatement(SQL_STATEMENTS.INSERT_PRODUCED_BY + mid +"," + objectid + SQL_STATEMENTS.END);
     }
 
-    private void insertMovieGenre(String mid, String objectid) throws SQLException {
+    private void insertMovieGenre(String mid, String objectid){
         executeStatement(SQL_STATEMENTS.INSERT_MOVIE_GENRE + mid +"," + objectid + SQL_STATEMENTS.END);
     }
 
-    private void executeStatement(String statement) throws SQLException {
+    private void executeStatement(String statement) {
         log.log(statement);
-        connection.createStatement().execute(statement);
+        try {
+            connection.createStatement().execute(statement);
+        } catch (SQLException e) {
+            errLog.log("Error: "+statement +":\n"+e.getMessage()+"\n");
+        }
     }
 
     private final class SQL_STATEMENTS{
 
-        static final String END = ")";
+        static final String END = ")" ;
 
         /* Statements to insert into Table */
-        static final String INSERT_MOVIE = "INSERT IGNORE INTO MOVIE(id,imdbid,title,original_title," +
-                "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,tagline) VALUES( " ;
-        static final String INSERT_GENRE = "INSERT IGNORE INTO GENRE(id,name) VALUES( ";
-        static final String INSERT_COLLECTIONS = "INSERT IGNORE INTO COLLECTIONS(id,name,poster_url) VALUES( ";
-        static final String INSERT_PRODUCTION_COMPANIES = "INSERT IGNORE INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
-        static final String INSERT_DEPARTMENT = "INSERT IGNORE INTO DEPARTMENT(id,name) VALUES( ";
-        static final String INSERT_CREW = "INSERT IGNORE INTO CREW(id,name,deptid) VALUES( ";
-        static final String INSERT_ACTORS = "INSERT IGNORE INTO ACTORS(id,name) VALUES( ";
+        static final String INSERT_MOVIE = "INSERT  INTO MOVIE(id,imdbid,title,original_title," +
+                "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,collection_id," +
+                "tagline) VALUES( " ;
+        static final String INSERT_GENRE = "INSERT  INTO GENRE(id,name) VALUES( ";
+        static final String INSERT_COLLECTIONS = "INSERT  INTO COLLECTIONS(id,name,poster_url) VALUES( ";
+        static final String INSERT_PRODUCTION_COMPANIES = "INSERT  INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
+        static final String INSERT_DEPARTMENT = "INSERT  INTO DEPARTMENT(id,name) VALUES( ";
+        static final String INSERT_CREW = "INSERT  INTO CREW(id,name,deptid) VALUES( ";
+        static final String INSERT_ACTORS = "INSERT  INTO ACTORS(id,name) VALUES( ";
 
 
-        static final String INSERT_MOVIE_GENRE = "INSERT IGNORE INTO movie_genre(mid,gid) VALUES( ";
-        static final String INSERT_PRODUCED_BY = "INSERT IGNORE INTO produced_by(mid,pid) VALUES( ";
-        static final String INSERT_APEARS_ON = "INSERT IGNORE INTO appears_on(mid,aid,character_name) VALUES( ";
-        static final String INSERT_WORKED_ON = "INSERT IGNORE INTO worked_on(mid,cid) VALUES( ";
+        static final String INSERT_MOVIE_GENRE = "INSERT INTO movie_genre(mid,gid) VALUES( ";
+        static final String INSERT_PRODUCED_BY = "INSERT INTO produced_by(mid,pid) VALUES( ";
+        static final String INSERT_APEARS_ON = "INSERT INTO appears_on(mid,aid,character_name) VALUES( ";
+        static final String INSERT_WORKED_ON = "INSERT INTO worked_on(mid,cid) VALUES( ";
 
         /* SELECT STATEMENTS */
         static final String GET_LATEST_ID = "SELECT max(id) FROM movie";

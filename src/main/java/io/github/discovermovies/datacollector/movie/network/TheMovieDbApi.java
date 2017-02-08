@@ -48,7 +48,7 @@ public class TheMovieDbApi {
         apiKey = apiKey==null?"":apiKey;
         String apiLogFileName = properties.getProperty(Application.KEY_LIST[ConfigValues.APT_LOG]);
         String apiErrorLogName = properties.getProperty(Application.KEY_LIST[ConfigValues.API_ERR_LOG]);
-        log = new Logger(apiLogFileName,false,true);
+        log = new Logger(apiLogFileName,false,false);
         errLog = new Logger(apiErrorLogName,true,true);
     }
 
@@ -76,7 +76,6 @@ public class TheMovieDbApi {
         String line;
         String output = "";
         while ((line = br.readLine()) != null) {
-            System.out.print(".");
             output += line;
         }
         if(Application.DEBUG) {

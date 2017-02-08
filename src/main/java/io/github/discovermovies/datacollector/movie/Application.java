@@ -42,7 +42,7 @@ public class Application {
             "Key", "API_log", "API_Err_log", "Database_log", "Database_err_log", "Database_create_log"
     };
     public static final Properties properties = new Properties();
-    public static final boolean DEBUG = true ;
+    public static final boolean DEBUG = false ;
 
 
     private Options options;
@@ -118,9 +118,7 @@ public class Application {
                 }
                 int id = db.getLatestID();
                 while (id<id_max){
-                    if(DEBUG) {
-                        System.out.println("\n\nNext:" + id);
-                    }
+                    System.out.println("\n\nNext:" + id);
                     obj = api.getMovie(""+id);
                     db.insertRecord(obj);
                     Thread.sleep(500);

@@ -41,7 +41,6 @@ public class Logger {
         printToStdOut = false;
     }
     public Logger(String logFileName, Boolean isError, Boolean printToStdOut){
-        this.printToStdOut = printToStdOut;
         if(isError) {
             stdWriter = new PrintWriter(System.err);
         }
@@ -59,7 +58,9 @@ public class Logger {
             System.err.println("Unable to access or create the log file: " + logFileName);
         }
         String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
+        this.printToStdOut = false;
         log("\n===================\n=== " + timeStamp + "\n===================\n");
+        this.printToStdOut = printToStdOut;
     }
 
     public void log(String message){

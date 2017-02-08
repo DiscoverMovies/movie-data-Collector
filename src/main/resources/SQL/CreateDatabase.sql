@@ -12,14 +12,14 @@ CREATE TABLE IF NOT EXISTS movie(
   original_title varchar(100) NOT NULL UNIQUE ,
   collection_id INT DEFAULT NULL ,
   language CHAR(2) NOT NULL ,
-  overview varchar(500) NOT NULL UNIQUE ,
+  overview varchar(1000) NOT NULL UNIQUE ,
   popularity DECIMAL(3,1),
   poster_url TEXT,
   release_date DATE NOT NULL ,
   runtime INT,
   vote_avg DECIMAL(3,1) ,
   vote_count INT ,
-  tagline varchar(100) UNIQUE );
+  tagline varchar(100));
 
 #table 2: Genre
 CREATE TABLE IF NOT EXISTS genre (
