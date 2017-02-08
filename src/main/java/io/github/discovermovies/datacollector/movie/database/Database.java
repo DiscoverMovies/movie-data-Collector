@@ -126,7 +126,7 @@ public class Database {
             String languages = "'";
             for (Object o : data.getJSONArray("spoken_languages")) {
                 JSONObject object = (JSONObject) o;
-                languages += object.get("iso_639_1");
+                languages += object.get("iso_639_1")+",";
             }
             languages += "',";
             String overview = "'" + data.get("overview").toString().replace("'","\\'") + "',";
@@ -208,15 +208,15 @@ public class Database {
         static final String END = ")" ;
 
         /* Statements to insert into Table */
-        static final String INSERT_MOVIE = "INSERT  INTO MOVIE(id,imdbid,title,original_title," +
+        static final String INSERT_MOVIE = "INSERT  INTO movie(id,imdbid,title,original_title," +
                 "language,overview,popularity,poster_url,release_date,runtime,vote_avg,vote_count,collection_id," +
                 "tagline) VALUES( " ;
-        static final String INSERT_GENRE = "INSERT  INTO GENRE(id,name) VALUES( ";
-        static final String INSERT_COLLECTIONS = "INSERT  INTO COLLECTIONS(id,name,poster_url) VALUES( ";
-        static final String INSERT_PRODUCTION_COMPANIES = "INSERT  INTO PRODUCTION_COMPANIES(id,name) VALUES( ";
-        static final String INSERT_DEPARTMENT = "INSERT  INTO DEPARTMENT(id,name) VALUES( ";
-        static final String INSERT_CREW = "INSERT  INTO CREW(id,name,deptid) VALUES( ";
-        static final String INSERT_ACTORS = "INSERT  INTO ACTORS(id,name) VALUES( ";
+        static final String INSERT_GENRE = "INSERT  INTO genre(id,name) VALUES( ";
+        static final String INSERT_COLLECTIONS = "INSERT  INTO collections(id,name,poster_url) VALUES( ";
+        static final String INSERT_PRODUCTION_COMPANIES = "INSERT  INTO production_companies(id,name) VALUES( ";
+        static final String INSERT_DEPARTMENT = "INSERT  INTO department(id,name) VALUES( ";
+        static final String INSERT_CREW = "INSERT  INTO crew(id,name,deptid) VALUES( ";
+        static final String INSERT_ACTORS = "INSERT  INTO actors(id,name) VALUES( ";
 
 
         static final String INSERT_MOVIE_GENRE = "INSERT INTO movie_genre(mid,gid) VALUES( ";

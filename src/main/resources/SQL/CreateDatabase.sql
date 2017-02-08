@@ -9,22 +9,22 @@ CREATE TABLE IF NOT EXISTS movie(
   id INT PRIMARY KEY ,
   imdbid CHAR(9) NOT NULL UNIQUE ,
   title TEXT NOT NULL ,
-  original_title varchar(100) NOT NULL UNIQUE ,
+  original_title varchar(100) NOT NULL ,
   collection_id INT DEFAULT NULL ,
-  language CHAR(2) NOT NULL ,
-  overview varchar(1000) NOT NULL UNIQUE ,
+  language VARCHAR(100) NOT NULL ,
+  overview MEDIUMTEXT,
   popularity DECIMAL(3,1),
   poster_url TEXT,
   release_date DATE NOT NULL ,
   runtime INT,
   vote_avg DECIMAL(3,1) ,
   vote_count INT ,
-  tagline varchar(100));
+  tagline TEXT);
 
 #table 2: Genre
 CREATE TABLE IF NOT EXISTS genre (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name CHAR(15) NOT NULL UNIQUE
+  id INT PRIMARY KEY,
+  name CHAR(15) NOT NULL
 );
 
 #table 3: Collections
@@ -36,19 +36,19 @@ CREATE TABLE IF NOT EXISTS collections(
 
 #table 4: ProductionCompanies
 CREATE TABLE IF NOT EXISTS production_companies(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name varchar(100) NOT NULL UNIQUE
+  id INT PRIMARY KEY,
+  name varchar(100) NOT NULL
 );
 
 #table 5: department
 CREATE TABLE IF NOT EXISTS department(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name varchar(100) NOT NULL UNIQUE
+  id INT PRIMARY KEY ,
+  name varchar(100) NOT NULL
 );
 
 #table 6: Crew
 CREATE TABLE IF NOT EXISTS crew(
-  id INT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY ,
   name varchar(100) NOT NULL,
   deptid INT,
   UNIQUE (name,deptid),
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS crew(
 
 #table 7: Actors
 CREATE TABLE IF NOT EXISTS actors(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name varchar(100) NOT NULL UNIQUE
+  id INT PRIMARY KEY,
+  name varchar(100) NOT NULL
 );
 
 
