@@ -44,7 +44,7 @@ public class Database {
         try{
             Class.forName("com.mysql.jdbc.Driver");
             log.log("Connecting to database...");
-            connection = DriverManager.getConnection(databaseConnection,username,password);
+            connection = DriverManager.getConnection(databaseConnection+"?autoReconnect=true&useSSL=false",username,password);
         } catch (ClassNotFoundException e) {
             System.err.println("Mysql driver not found. Unable to connect");
             throw e;
@@ -211,10 +211,10 @@ public class Database {
         static final String INSERT_ACTORS = "INSERT IGNORE INTO ACTORS(id,name) VALUES( ";
 
 
-        static final String INSERT_MOVIE_GENRE = "INSERT INTO movie_genre(mid,gid) VALUES( ";
-        static final String INSERT_PRODUCED_BY = "INSERT INTO produced_by(mid,pid) VALUES( ";
-        static final String INSERT_APEARS_ON = "INSERT INTO appears_on(mid,aid,character_name) VALUES( ";
-        static final String INSERT_WORKED_ON = "INSERT INTO worked_on(mid,cid) VALUES( ";
+        static final String INSERT_MOVIE_GENRE = "INSERT IGNORE INTO movie_genre(mid,gid) VALUES( ";
+        static final String INSERT_PRODUCED_BY = "INSERT IGNORE INTO produced_by(mid,pid) VALUES( ";
+        static final String INSERT_APEARS_ON = "INSERT IGNORE INTO appears_on(mid,aid,character_name) VALUES( ";
+        static final String INSERT_WORKED_ON = "INSERT IGNORE INTO worked_on(mid,cid) VALUES( ";
 
         /* SELECT STATEMENTS */
         static final String GET_LATEST_ID = "SELECT max(id) FROM movie";
