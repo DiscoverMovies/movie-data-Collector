@@ -50,12 +50,8 @@ CREATE TABLE IF NOT EXISTS department(
 CREATE TABLE IF NOT EXISTS crew(
   id INT PRIMARY KEY ,
   name varchar(100) NOT NULL,
-  deptid INT,
-  UNIQUE (name,deptid),
-  FOREIGN KEY (deptid)
-  REFERENCES department(id)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
+  dept VARCHAR(100) NOT NULL,
+  UNIQUE (name,dept)
 );
 
 #table 7: Actors

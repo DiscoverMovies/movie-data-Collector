@@ -106,7 +106,33 @@ public class Database {
             }
         }
         catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
 
+    public void insertCast(JSONObject data){
+        try {
+            String mid = data.get("id").toString();
+            try {
+                for (Object o : data.getJSONArray("cast")) {
+                    JSONObject cast = (JSONObject) o;
+                    insertActor(cast.get("id").toString(), cast.get("name").toString().replace("'", "\\'"));
+                    insertApearsOn(mid, cast.get("id").toString(),cast.get("character").toString());
+                }
+            } catch (JSONException e) {
+                errLog.log("Error: " + e.getMessage());
+            }
+            try {
+                for (Object o : data.getJSONArray("crew")) {
+                    JSONObject crew = (JSONObject) o;
+                    insertCrew(crew.get("id").toString(), crew.get("name").toString().replace("'", "\\'"),crew.get("job").toString());
+                    insertWorkedOn(mid, crew.get("id").toString());
+                }
+            } catch (JSONException e) {
+                errLog.log("Error: " + e.getMessage());
+            }
+        }catch (JSONException e){
+            errLog.log("No valid movie: " + e.getMessage());
         }
     }
 
@@ -146,9 +172,9 @@ public class Database {
         }
     }
 
-    public void insertCrew(String id, String name, String deptid) {
+    public void insertCrew(String id, String name, String dept) {
         executeStatement(SQL_STATEMENTS.INSERT_CREW + id +",'"+name+"'" +
-                ","+deptid+ SQL_STATEMENTS.END);
+                ",'"+dept+"'"+ SQL_STATEMENTS.END);
 
     }
 
@@ -215,7 +241,7 @@ public class Database {
         static final String INSERT_COLLECTIONS = "INSERT  INTO collections(id,name,poster_url) VALUES( ";
         static final String INSERT_PRODUCTION_COMPANIES = "INSERT  INTO production_companies(id,name) VALUES( ";
         static final String INSERT_DEPARTMENT = "INSERT  INTO department(id,name) VALUES( ";
-        static final String INSERT_CREW = "INSERT  INTO crew(id,name,deptid) VALUES( ";
+        static final String INSERT_CREW = "INSERT  INTO crew(id,name,dept) VALUES( ";
         static final String INSERT_ACTORS = "INSERT  INTO actors(id,name) VALUES( ";
 
 

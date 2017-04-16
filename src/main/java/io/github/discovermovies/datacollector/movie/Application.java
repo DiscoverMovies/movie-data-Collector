@@ -108,6 +108,7 @@ public class Application {
         while(i<5) {
             try {
                 JSONObject obj = api.getLatestMovie();
+                JSONObject cast;
                 int id_max =0;
 
                 try {
@@ -120,13 +121,17 @@ public class Application {
                 while (id<id_max){
                     System.out.println("\n\nNext:" + id);
                     obj = api.getMovie(""+id);
+                    cast = api.getCast(""+id);
                     db.insertRecord(obj);
+                    db.insertCast(cast);
                     Thread.sleep(500);
                     ++id;
                 }
                 if(id==id_max)
                     break;
             } catch (IOException e) {
+                api.errLog.log(e.getMessage());
+                e.printStackTrace();
                 api.errLog.log("Retrying: " + i);
                 ++i;
             }catch (SQLException e){

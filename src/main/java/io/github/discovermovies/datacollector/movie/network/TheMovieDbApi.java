@@ -31,6 +31,7 @@ import static io.github.discovermovies.datacollector.movie.Application.propertie
  *   You should have received a copy of the GNU General Public License
  *   along with movie-data-Collector.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 public class TheMovieDbApi {
     private static final String URL = "https://api.themoviedb.org/3/movie/";
     private static final String LATEST = "latest";
@@ -64,6 +65,12 @@ public class TheMovieDbApi {
         return new JSONObject(output);
     }
 
+    public JSONObject getCast(String id) throws IOException {
+        String output = getResponseFromServer(URL+id+ "/credits" + PARAMETERS+API_KEY + apiKey);
+        log.log("Output from server: \n" + URL+id+ "/credits" + PARAMETERS+API_KEY + apiKey +"\n"+output);
+        return new JSONObject(output);
+    }
+
     private String getResponseFromServer(String url) throws IOException {
         HttpGet request = new HttpGet(url);
         if(Application.DEBUG) {
@@ -72,12 +79,12 @@ public class TheMovieDbApi {
         CloseableHttpResponse response = client.execute(request);
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 (response.getEntity().getContent())));
-        request.releaseConnection();
         String line;
         String output = "";
         while ((line = br.readLine()) != null) {
             output += line;
         }
+        request.releaseConnection();
         if(Application.DEBUG) {
             System.out.println();
         }
